@@ -49,5 +49,73 @@ lint = [
     "pre-commit",
 ]
 
+rocm = [
+    "torch==2.5.1",
+    "torchaudio==2.5.1",
+    "torchvision==0.20.1",
+    "pytorch-triton-rocm==3.1.0",
+]
+cuda = [
+    "torch==2.5.1",
+    "torchaudio==2.5.1",
+    "torchvision==0.20.1",
+    "pytorch-triton==3.0.0",
+]
+cpu = [
+    "torch==2.5.1",
+    "torchaudio==2.5.1",
+    "torchvision==0.20.1",
+    "pytorch-triton==3.0.0",
+]
+
+[tool.uv]
+package = false
+conflicts = [[{ extra = "cuda" }, { extra = "cpu" }, { extra = "rocm" }]]
+[tool.uv.sources]
+torch = [
+    { index = "torch-cpu", extra = "cpu" },
+    { index = "torch-cuda", extra = "cuda" },
+    { index = "torch-rocm", extra = "rocm" },
+]
+torchvision = [
+    { index = "torch-cpu", extra = "cpu" },
+    { index = "torch-cuda", extra = "cuda" },
+    { index = "torch-rocm", extra = "rocm" },
+]
+torchaudio = [
+    { index = "torch-cpu", extra = "cpu" },
+    { index = "torch-cuda", extra = "cuda" },
+    { index = "torch-rocm", extra = "rocm" },
+]
+
+# tool.uv.sources.<package-name>[number].index does not propagate.
+# https://github.com/astral-sh/uv/issues/8253
+pytorch-triton-rocm = [{ index = "torch-rocm", extra = "rocm" }]
+pytorch-triton = [
+    { index = "torch-cpu", extra = "cpu" },
+    { index = "torch-cuda", extra = "cuda" },
+]
+
+# Example for using GitHub packages
+# gymnasium = { git = "https://github.com/Farama-Foundation/Gymnasium", rev = "5bc344e03ae457712b49bf06c20a313b6b1accc4" }
+
+
+[[tool.uv.index]]
+name = "torch-rocm"
+url = "https://download.pytorch.org/whl/rocm6.2"
+explicit = true
+
+[[tool.uv.index]]
+name = "torch-cuda"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[[tool.uv.index]]
+name = "torch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+
+
 [tool.setuptools]
 packages = {find = {exclude = ["images"]}}
